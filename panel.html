@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de Negocio — Multiservice Guro (demo)</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='11' y='0' fill='%23ffcc00'/%3E%3Crect width='32' height='11' y='11' fill='%230033a0'/%3E%3Crect width='32' height='10' y='22' fill='%23cf142b'/%3E%3Ctext x='16' y='16.5' font-size='7' text-anchor='middle' dominant-baseline='middle' fill='white'%3E%E2%98%85%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="panel.css">
+</head>
+<body>
+
+<div class="bandera-ribbon"><span></span><span></span><span></span></div>
+
+<div class="aviso-demo">Modo demostración — usuario, contraseña y datos son de ejemplo, no reales</div>
+
+<!-- PANTALLA DE LOGIN -->
+<section id="pantalla-login" class="pantalla-login">
+  <form id="form-login" class="tarjeta-login">
+    <p class="login-eyebrow">Multiservice Guro</p>
+    <h1>Panel de Negocio</h1>
+    <p class="login-sub">Acceso solo para personal autorizado</p>
+
+    <label for="usuario">Usuario</label>
+    <input type="text" id="usuario" autocomplete="off" required>
+
+    <label for="clave">Contraseña</label>
+    <input type="password" id="clave" autocomplete="off" required>
+
+    <p id="error-login" class="error-login"></p>
+
+    <button type="submit" class="btn-entrar">Entrar</button>
+
+    <p class="pista-demo">Demo: usuario <strong>admin</strong> · contraseña <strong>1234</strong></p>
+  </form>
+</section>
+
+<!-- PANEL PRINCIPAL (oculto hasta iniciar sesión) -->
+<div id="panel-negocio" class="panel-negocio" hidden>
+
+  <header class="panel-header">
+    <div>
+      <p class="panel-eyebrow">Multiservice Guro SAC</p>
+      <h1>Panel de Negocio</h1>
+    </div>
+    <button id="btn-salir" class="btn-salir">Cerrar sesión</button>
+  </header>
+
+  <main class="panel-main">
+
+    <section class="panel-seccion" id="seccion-clientes">
+      <h2>Clientes</h2>
+      <div class="tabla-wrap">
+        <table>
+          <thead><tr><th>Nombre</th><th>País</th><th>Estado</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel-seccion" id="seccion-cobrar">
+      <h2>Cuentas por cobrar</h2>
+      <div class="tabla-wrap">
+        <table>
+          <thead><tr><th>Cliente</th><th>Monto</th><th>Fecha</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="total-seccion">Total por cobrar: <strong id="total-cobrar">—</strong></p>
+    </section>
+
+    <section class="panel-seccion" id="seccion-pagar">
+      <h2>Cuentas por pagar</h2>
+      <div class="tabla-wrap">
+        <table>
+          <thead><tr><th>Proveedor</th><th>Monto</th><th>Fecha</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="total-seccion">Total por pagar: <strong id="total-pagar">—</strong></p>
+    </section>
+
+    <section class="panel-seccion" id="seccion-divisas">
+      <h2>Divisas</h2>
+      <div class="divisas-grid"></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="panel.js"></script>
+</body>
+</html>

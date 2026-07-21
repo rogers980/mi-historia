@@ -711,6 +711,16 @@ img, .hito-img { max-width: 100%; }
   color: rgba(255, 215, 106, 0.7);
 }
 
+.enlace-panel {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+}
+
+.enlace-panel a {
+  color: var(--dorado-claro);
+  text-decoration: underline;
+}
+
 /* RESPONSIVE — mantiene la misma estructura (línea central, tarjetas
    alternadas a los lados) que en computadora, solo reduce tamaños */
 @media (max-width: 720px) {
