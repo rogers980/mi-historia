@@ -59,6 +59,10 @@ h1, h2 {
   padding: 2rem 1.5rem;
 }
 
+.pantalla-login[hidden] {
+  display: none;
+}
+
 .tarjeta-login {
   width: 100%;
   max-width: 380px;
@@ -174,6 +178,15 @@ h1, h2 {
 .pista-demo strong { color: var(--dorado); }
 
 /* PANEL */
+.panel-negocio:not([hidden]) {
+  animation: panelAparece 0.35s ease;
+}
+
+@keyframes panelAparece {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .panel-header {
   display: flex;
   flex-wrap: wrap;
@@ -296,6 +309,14 @@ td { color: var(--texto-suave); }
 
 .divisa-card .tasas span { color: var(--texto); font-weight: bold; }
 .divisa-card .ganancia span { color: #6fd68a; }
+
+.divisa-nota {
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--dorado-claro);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
 
 /* FORMULARIOS DEL AGENTE */
 .form-registro {

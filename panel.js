@@ -30,7 +30,7 @@ const pagarBase = [
 const divisasBase = [
   { moneda: 'Dólar (USD)', compra: 3.75, venta: 3.80 },
   { moneda: 'Sol (PEN)', compra: 1.00, venta: 1.00 },
-  { moneda: 'Bolívar (VES)', compra: 38.20, venta: 39.10 },
+  { moneda: 'Bolívar (VES)', compra: 38.20, venta: 39.10, nota: 'Tasa Binance' },
 ];
 
 const bancosExtranjero = [
@@ -94,6 +94,7 @@ function llenarDivisas() {
       <div class="tasas">Compra: <span>${d.compra}</span></div>
       <div class="tasas">Venta: <span>${d.venta}</span></div>
       <div class="tasas ganancia">Ganancia: <span>8%</span></div>
+      ${d.nota ? `<div class="divisa-nota">${d.nota}</div>` : ''}
     `;
     contenedor.appendChild(tarjeta);
   });
@@ -149,6 +150,7 @@ formLogin.addEventListener('submit', (evento) => {
     } else {
       panelAgente.hidden = false;
     }
+    window.scrollTo(0, 0);
   } else {
     errorLogin.textContent = 'Usuario o contraseña incorrectos.';
   }
@@ -161,6 +163,7 @@ function cerrarSesion(panel) {
   botonesRol.forEach((b) => b.classList.toggle('activo', b.dataset.rol === 'admin'));
   document.getElementById('confirmacion-agente').textContent = '';
   pantallaLogin.hidden = false;
+  window.scrollTo(0, 0);
 }
 
 document.getElementById('btn-salir').addEventListener('click', () => cerrarSesion(panelNegocio));
