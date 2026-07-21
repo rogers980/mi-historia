@@ -47,3 +47,15 @@ const dias = Math.floor((new Date() - inicioAprendizaje) / msPorDia) + 1;
 
 document.getElementById('contador-dias').textContent =
   dias === 1 ? '1 día' : `${dias} días`;
+
+async function actualizarContadorVisitas() {
+  try {
+    const respuesta = await fetch('https://abacus.jasoncameron.dev/hit/rogers980-mi-historia/visitas');
+    const datos = await respuesta.json();
+    document.getElementById('contador-visitas').textContent = datos.value;
+  } catch (error) {
+    document.getElementById('contador-visitas').textContent = '—';
+  }
+}
+
+actualizarContadorVisitas();

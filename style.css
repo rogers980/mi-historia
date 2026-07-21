@@ -344,6 +344,12 @@ img, .hito-img { max-width: 100%; }
   font-size: 0.9rem;
 }
 
+.contador-visitas {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: rgba(255, 215, 106, 0.7);
+}
+
 /* RESPONSIVE — mantiene la misma estructura (línea central, tarjetas
    alternadas a los lados) que en computadora, solo reduce tamaños */
 @media (max-width: 720px) {
