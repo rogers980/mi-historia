@@ -711,14 +711,26 @@ img, .hito-img { max-width: 100%; }
   color: rgba(255, 215, 106, 0.7);
 }
 
-.enlace-panel {
-  margin-top: 0.75rem;
-  font-size: 0.8rem;
+.btn-panel {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.6rem;
+  border: 1px solid var(--dorado);
+  border-radius: 999px;
+  background: var(--dorado);
+  color: var(--azul-osc);
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 18px rgba(255, 204, 0, 0.3);
 }
 
-.enlace-panel a {
-  color: var(--dorado-claro);
-  text-decoration: underline;
+.btn-panel:hover {
+  background: var(--dorado-claro);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(255, 204, 0, 0.4);
 }
 
 /* RESPONSIVE — mantiene la misma estructura (línea central, tarjetas
