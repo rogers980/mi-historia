@@ -27,11 +27,6 @@ const pagarBase = [
   { proveedor: 'BBVA Provincial', monto: 900, moneda: 'USD', fecha: '2026-07-28' },
 ];
 
-const divisasBase = [
-  { moneda: 'Dólar (USD)', compra: 3.75, venta: 3.80 },
-  { moneda: 'Sol (PEN)', compra: 1.00, venta: 1.00 },
-];
-
 const bancosExtranjero = [
   { pais: 'Colombia', banco: 'Bancolombia' },
   { pais: 'Chile', banco: 'Banco Santander' },
@@ -82,21 +77,9 @@ function llenarCuentas(base, claveGuardado, selectorTabla, columnaNombre, idTota
 }
 
 function llenarDivisas() {
-  const contenedor = document.querySelector('.divisas-grid');
-  contenedor.innerHTML = '';
-  const todas = [...divisasBase, ...leerGuardado('guro_divisas')];
-  todas.forEach((d) => {
-    const tarjeta = document.createElement('div');
-    tarjeta.className = 'divisa-card';
-    tarjeta.innerHTML = `
-      <div class="moneda">${d.moneda}</div>
-      <div class="tasas">Compra: <span>${d.compra}</span></div>
-      <div class="tasas">Venta: <span>${d.venta}</span></div>
-      <div class="tasas ganancia">Ganancia: <span>8%</span></div>
-    `;
-    contenedor.appendChild(tarjeta);
-  });
-  cargarTasasVES(contenedor);
+  const contenedorVivo = document.querySelector('#seccion-tasas-vivo .divisas-grid');
+  contenedorVivo.innerHTML = '';
+  cargarTasasVES(contenedorVivo);
 }
 
 function crearTarjetaVES(titulo) {
@@ -106,17 +89,53 @@ function crearTarjetaVES(titulo) {
   return tarjeta;
 }
 
-function calcularTendencia(clave, valorActual) {
-  const anterior = parseFloat(localStorage.getItem(clave));
-  localStorage.setItem(clave, valorActual);
-  if (!anterior || Number.isNaN(anterior) || anterior === valorActual) {
+function actualizarHistorial(clave, valorActual) {
+  let historial;
+  try {
+    historial = JSON.parse(localStorage.getItem(clave));
+    if (!Array.isArray(historial)) historial = [];
+  } catch {
+    historial = [];
+  }
+  historial.push(valorActual);
+  while (historial.length > 12) historial.shift();
+  localStorage.setItem(clave, JSON.stringify(historial));
+  return historial;
+}
+
+function calcularTendencia(historial) {
+  if (historial.length < 2 || historial[historial.length - 2] === historial[historial.length - 1]) {
     return '<span class="tendencia neutra">→ sin cambio</span>';
   }
-  const cambio = ((valorActual - anterior) / anterior) * 100;
+  const anterior = historial[historial.length - 2];
+  const actual = historial[historial.length - 1];
+  const cambio = ((actual - anterior) / anterior) * 100;
   const sube = cambio > 0;
   const flecha = sube ? '▲' : '▼';
   const clase = sube ? 'sube' : 'baja';
   return `<span class="tendencia ${clase}">${flecha} ${Math.abs(cambio).toFixed(2)}%</span>`;
+}
+
+function dibujarSparkline(historial) {
+  if (historial.length < 2) {
+    return '<div class="sparkline-vacio">Gráfica disponible tras varias consultas</div>';
+  }
+  const ancho = 140;
+  const alto = 36;
+  const min = Math.min(...historial);
+  const max = Math.max(...historial);
+  const rango = max - min || 1;
+  const paso = ancho / (historial.length - 1);
+  const puntos = historial
+    .map((v, i) => `${(i * paso).toFixed(1)},${(alto - ((v - min) / rango) * alto).toFixed(1)}`)
+    .join(' ');
+  const sube = historial[historial.length - 1] >= historial[0];
+  const color = sube ? '#6fd68a' : '#cf142b';
+  return `
+    <svg class="sparkline" viewBox="0 0 ${ancho} ${alto}" preserveAspectRatio="none">
+      <polyline points="${puntos}" fill="none" stroke="${color}" stroke-width="2" />
+    </svg>
+  `;
 }
 
 async function cargarTasasVES(contenedor) {
@@ -126,7 +145,8 @@ async function cargarTasasVES(contenedor) {
   const tarjetaCop = crearTarjetaVES('Peso colombiano');
   const tarjetaClp = crearTarjetaVES('Peso chileno');
   const tarjetaPen = crearTarjetaVES('Sol — Mercado');
-  [tarjetaBcv, tarjetaBinance, tarjetaMxn, tarjetaCop, tarjetaClp, tarjetaPen].forEach((t) => contenedor.appendChild(t));
+  const tarjetaBtc = crearTarjetaVES('Bitcoin (BTC)');
+  [tarjetaBcv, tarjetaBinance, tarjetaMxn, tarjetaCop, tarjetaClp, tarjetaPen, tarjetaBtc].forEach((t) => contenedor.appendChild(t));
 
   try {
     const respuesta = await fetch('https://ve.dolarapi.com/v1/dolares');
@@ -137,20 +157,22 @@ async function cargarTasasVES(contenedor) {
     const paralelo = datos.find((d) => d.fuente === 'paralelo');
 
     if (oficial) {
-      const tendencia = calcularTendencia('guro_tasa_bcv', oficial.promedio);
+      const historial = actualizarHistorial('guro_hist_bcv', oficial.promedio);
       tarjetaBcv.innerHTML = `
         <div class="moneda">Bolívar — BCV</div>
         <div class="tasas">1 USD = <span>${oficial.promedio.toFixed(2)} Bs</span></div>
-        ${tendencia}
+        ${calcularTendencia(historial)}
+        ${dibujarSparkline(historial)}
         <div class="divisa-nota">Oficial · ${new Date(oficial.fechaActualizacion).toLocaleDateString('es-VE')}</div>
       `;
     }
     if (paralelo) {
-      const tendencia = calcularTendencia('guro_tasa_binance', paralelo.promedio);
+      const historial = actualizarHistorial('guro_hist_binance', paralelo.promedio);
       tarjetaBinance.innerHTML = `
         <div class="moneda">Bolívar — Binance</div>
         <div class="tasas">1 USD = <span>${paralelo.promedio.toFixed(2)} Bs</span></div>
-        ${tendencia}
+        ${calcularTendencia(historial)}
+        ${dibujarSparkline(historial)}
         <div class="divisa-nota">Paralelo/Binance · ${new Date(paralelo.fechaActualizacion).toLocaleDateString('es-VE')}</div>
       `;
     }
@@ -166,19 +188,20 @@ async function cargarTasasVES(contenedor) {
     const fecha = new Date(datos.time_last_update_utc).toLocaleDateString('es-VE');
 
     const pares = [
-      { tarjeta: tarjetaMxn, nombre: 'Peso mexicano', codigo: 'MXN', clave: 'guro_tasa_mxn' },
-      { tarjeta: tarjetaCop, nombre: 'Peso colombiano', codigo: 'COP', clave: 'guro_tasa_cop' },
-      { tarjeta: tarjetaClp, nombre: 'Peso chileno', codigo: 'CLP', clave: 'guro_tasa_clp' },
-      { tarjeta: tarjetaPen, nombre: 'Sol — Mercado', codigo: 'PEN', clave: 'guro_tasa_pen' },
+      { tarjeta: tarjetaMxn, nombre: 'Peso mexicano', codigo: 'MXN', clave: 'guro_hist_mxn' },
+      { tarjeta: tarjetaCop, nombre: 'Peso colombiano', codigo: 'COP', clave: 'guro_hist_cop' },
+      { tarjeta: tarjetaClp, nombre: 'Peso chileno', codigo: 'CLP', clave: 'guro_hist_clp' },
+      { tarjeta: tarjetaPen, nombre: 'Sol — Mercado', codigo: 'PEN', clave: 'guro_hist_pen' },
     ];
 
     pares.forEach(({ tarjeta, nombre, codigo, clave }) => {
       const valor = datos.rates[codigo];
-      const tendencia = calcularTendencia(clave, valor);
+      const historial = actualizarHistorial(clave, valor);
       tarjeta.innerHTML = `
         <div class="moneda">${nombre}</div>
         <div class="tasas">1 USD = <span>${valor.toFixed(2)} ${codigo}</span></div>
-        ${tendencia}
+        ${calcularTendencia(historial)}
+        ${dibujarSparkline(historial)}
         <div class="divisa-nota">Mercado · ${fecha}</div>
       `;
     });
@@ -191,6 +214,23 @@ async function cargarTasasVES(contenedor) {
     ].forEach(({ tarjeta, nombre }) => {
       tarjeta.innerHTML = `<div class="moneda">${nombre}</div><div class="tasas">No disponible</div>`;
     });
+  }
+
+  try {
+    const respuesta = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+    if (!respuesta.ok) throw new Error('Respuesta no válida');
+    const datos = await respuesta.json();
+    const valor = datos.bitcoin.usd;
+    const historial = actualizarHistorial('guro_hist_btc', valor);
+    tarjetaBtc.innerHTML = `
+      <div class="moneda">Bitcoin (BTC)</div>
+      <div class="tasas">1 BTC = <span>$${valor.toLocaleString('es')}</span></div>
+      ${calcularTendencia(historial)}
+      ${dibujarSparkline(historial)}
+      <div class="divisa-nota">CoinGecko · en vivo</div>
+    `;
+  } catch (error) {
+    tarjetaBtc.innerHTML = '<div class="moneda">Bitcoin (BTC)</div><div class="tasas">No disponible</div>';
   }
 }
 
@@ -310,18 +350,6 @@ if (panelAgente) {
       });
       evento.target.reset();
       mostrarConfirmacion('Cuenta por pagar agregada correctamente.');
-    });
-
-    document.getElementById('form-divisa').addEventListener('submit', (evento) => {
-      evento.preventDefault();
-      const datos = new FormData(evento.target);
-      agregarGuardado('guro_divisas', {
-        moneda: datos.get('moneda'),
-        compra: Number(datos.get('compra')),
-        venta: Number(datos.get('venta')),
-      });
-      evento.target.reset();
-      mostrarConfirmacion('Divisa actualizada correctamente.');
     });
   }
 }

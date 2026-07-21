@@ -329,6 +329,20 @@ td { color: var(--texto-suave); }
 .tendencia.baja { color: var(--rojo); }
 .tendencia.neutra { color: var(--texto-suave); font-weight: normal; }
 
+.sparkline {
+  display: block;
+  width: 100%;
+  height: 36px;
+  margin-top: 0.5rem;
+}
+
+.sparkline-vacio {
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  color: var(--texto-suave);
+  font-style: italic;
+}
+
 /* FORMULARIOS DEL AGENTE */
 .form-registro {
   display: grid;
