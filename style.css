@@ -1,10 +1,12 @@
 :root {
   --crema: #fdfbf3;
   --crema-osc: #f5f0dc;
-  --verde: #1fa463;
-  --verde-osc: #0f4d33;
+  --verde: #1a7a4a;
+  --verde-osc: #14532d;
   --dorado: #f6b400;
   --dorado-claro: #ffd76a;
+  --rojo: #b91c1c;
+  --azul: #1e3a8a;
   --texto: #22301f;
   --texto-suave: #55624e;
   --sombra: rgba(15, 77, 51, 0.15);
@@ -69,7 +71,10 @@ img, .hito-img { max-width: 100%; }
 }
 
 .hero h1 {
+  font-family: 'Playfair Display', 'Palatino Linotype', Georgia, serif;
+  font-weight: 900;
   font-size: clamp(2.4rem, 6vw, 4rem);
+  letter-spacing: -0.01em;
   margin-bottom: 0.3em;
 }
 
@@ -241,7 +246,12 @@ img, .hito-img { max-width: 100%; }
   padding: 1.5rem 1rem;
 }
 
+.valor:nth-child(2) { border-color: rgba(96, 130, 219, 0.5); }
+.valor:nth-child(3) { border-color: rgba(224, 90, 90, 0.5); }
+
 .valor h4 { color: var(--dorado-claro); }
+.valor:nth-child(2) h4 { color: #a8c0f0; }
+.valor:nth-child(3) h4 { color: #f0a8a8; }
 .valor p { color: #dff2e4; margin: 0; }
 
 /* FUTURO */
@@ -272,15 +282,31 @@ img, .hito-img { max-width: 100%; }
   font-size: 0.9rem;
 }
 
-/* RESPONSIVE */
+/* RESPONSIVE — mantiene la misma estructura (línea central, tarjetas
+   alternadas a los lados) que en computadora, solo reduce tamaños */
 @media (max-width: 720px) {
-  .linea { left: 24px; }
-  .hito-marcador { left: 24px; }
-  .hito, .hito[data-lado="izquierda"], .hito[data-lado="derecha"] {
-    justify-content: flex-start;
-    padding-left: 3rem;
+  .timeline { padding: 3rem 0.75rem 4rem; }
+  .hito-card {
+    width: 46%;
+    padding: 1rem;
   }
-  .hito-card { width: 100%; }
+  .hito-marcador {
+    width: 12px;
+    height: 12px;
+    top: 1.2rem;
+  }
+  .hito-fecha { font-size: 0.65rem; }
+  .hito-card h3 { font-size: 1rem; }
+  .hito-card p { font-size: 0.82rem; }
+  .hito-img { height: 110px; margin: 0.5rem 0 0.75rem; }
+}
+
+@media (max-width: 420px) {
+  .hito-card { padding: 0.75rem; }
+  .hito-fecha { font-size: 0.6rem; }
+  .hito-card h3 { font-size: 0.9rem; }
+  .hito-card p { font-size: 0.76rem; }
+  .hito-img { height: 85px; }
 }
 
 /* MODO OSCURO manual, controlado por el botón */
