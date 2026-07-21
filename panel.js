@@ -19,12 +19,26 @@ const cobrarBase = [
   { cliente: 'María Fernández', monto: 1250, moneda: 'USD', fecha: '2026-07-15' },
   { cliente: 'Ana Gómez', monto: 3800, moneda: 'PEN', fecha: '2026-07-18' },
   { cliente: 'Daniela Torres', monto: 640, moneda: 'USD', fecha: '2026-07-20' },
+  { cliente: 'Pedro Ramírez (menudeo)', monto: 10, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Lucía Salazar (menudeo)', monto: 15, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Jorge Medina (menudeo)', monto: 20, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Rosa Delgado (menudeo)', monto: 30, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Iván Castillo (menudeo)', monto: 50, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Marta Rojas (menudeo)', monto: 75, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Tomás Vargas (menudeo)', monto: 100, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Elena Paredes (menudeo)', monto: 150, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Ricardo Núñez (menudeo)', monto: 200, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Valentina Cruz (menudeo)', monto: 300, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Andrés Molina (menudeo)', monto: 500, moneda: 'USD', fecha: '2026-07-21' },
 ];
 
 const pagarBase = [
   { proveedor: 'Banco Mercantil', monto: 2200, moneda: 'USD', fecha: '2026-07-22' },
   { proveedor: 'Banesco', monto: 1500, moneda: 'USD', fecha: '2026-07-25' },
   { proveedor: 'BBVA Provincial', monto: 900, moneda: 'USD', fecha: '2026-07-28' },
+  { proveedor: 'Bancolombia', monto: 350, moneda: 'USD', fecha: '2026-07-23' },
+  { proveedor: 'Interbank', monto: 600, moneda: 'USD', fecha: '2026-07-24' },
+  { proveedor: 'Banco Azteca', monto: 950, moneda: 'USD', fecha: '2026-07-26' },
 ];
 
 const bancosExtranjero = [
@@ -96,6 +110,9 @@ function actualizarHistorial(clave, valorActual) {
     if (!Array.isArray(historial)) historial = [];
   } catch {
     historial = [];
+  }
+  if (historial.length === 0) {
+    historial = [valorActual];
   }
   historial.push(valorActual);
   while (historial.length > 12) historial.shift();
