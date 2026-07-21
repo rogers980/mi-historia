@@ -126,14 +126,27 @@ function dibujarSparkline(historial) {
   const max = Math.max(...historial);
   const rango = max - min || 1;
   const paso = ancho / (historial.length - 1);
-  const puntos = historial
-    .map((v, i) => `${(i * paso).toFixed(1)},${(alto - ((v - min) / rango) * alto).toFixed(1)}`)
-    .join(' ');
+  const coords = historial.map((v, i) => [
+    Number((i * paso).toFixed(1)),
+    Number((alto - ((v - min) / rango) * alto).toFixed(1)),
+  ]);
+  const puntos = coords.map(([x, y]) => `${x},${y}`).join(' ');
+  const [ultimoX, ultimoY] = coords[coords.length - 1];
+  const areaId = `area-${Math.round(min * 1000)}-${coords.length}`;
+  const puntosArea = `0,${alto} ${puntos} ${ancho},${alto}`;
   const sube = historial[historial.length - 1] >= historial[0];
   const color = sube ? '#6fd68a' : '#cf142b';
   return `
     <svg class="sparkline" viewBox="0 0 ${ancho} ${alto}" preserveAspectRatio="none">
-      <polyline points="${puntos}" fill="none" stroke="${color}" stroke-width="2" />
+      <defs>
+        <linearGradient id="${areaId}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="${color}" stop-opacity="0.35" />
+          <stop offset="100%" stop-color="${color}" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      <polygon points="${puntosArea}" fill="url(#${areaId})" stroke="none" />
+      <polyline points="${puntos}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+      <circle cx="${ultimoX}" cy="${ultimoY}" r="2.5" fill="${color}" />
     </svg>
   `;
 }
