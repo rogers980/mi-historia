@@ -712,8 +712,9 @@ img, .hito-img { max-width: 100%; }
 }
 
 .btn-panel {
-  display: inline-block;
-  margin-top: 1.5rem;
+  display: block;
+  width: fit-content;
+  margin: 1rem auto 0;
   padding: 0.75rem 1.6rem;
   border: 1px solid var(--dorado);
   border-radius: 999px;
