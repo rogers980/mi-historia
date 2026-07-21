@@ -1,8 +1,0 @@
-Pon aquí tus fotos (por ejemplo: infancia.jpg, migracion.jpg, hoy.jpg).
-
-Luego, en index.html, cambia cada:
-  style="background-image:url('img/placeholder.jpg')"
-por, por ejemplo:
-  style="background-image:url('img/infancia.jpg')"
-
-Puedes borrar este archivo cuando ya no lo necesites.

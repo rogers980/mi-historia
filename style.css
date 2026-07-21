@@ -203,10 +203,12 @@ img, .hito-img { max-width: 100%; }
   box-shadow: inset 0 0 0 1px rgba(31, 164, 99, 0.25);
 }
 
-.hito-img svg {
+.hito-img svg,
+.hito-img img {
   width: 100%;
   height: 100%;
   display: block;
+  object-fit: cover;
 }
 
 /* MENTALIDAD */
