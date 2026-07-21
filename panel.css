@@ -232,6 +232,26 @@ h1, h2 {
   gap: 2rem;
 }
 
+.separador-mercado {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.5rem 0 -0.5rem;
+  color: var(--dorado-claro);
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.separador-mercado::before,
+.separador-mercado::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 204, 0, 0.25);
+}
+
 .panel-seccion {
   background: var(--crema-osc);
   border: 1px solid rgba(255,255,255,0.06);
