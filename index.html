@@ -5,16 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Roger Soto — Mi Historia</title>
 <meta name="description" content="De Maracaibo a Bogotá, Ecuador, Perú, el Darién y de vuelta: la historia de un migrante venezolano con mentalidad de millonario.">
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='11' y='0' fill='%23ffcc00'/%3E%3Crect width='32' height='11' y='11' fill='%230033a0'/%3E%3Crect width='32' height='10' y='22' fill='%23cf142b'/%3E%3Ctext x='16' y='16.5' font-size='7' text-anchor='middle' dominant-baseline='middle' fill='white'%3E%E2%98%85%3C/text%3E%3C/svg%3E">
+
+<meta property="og:title" content="Roger Soto — Mi Historia">
+<meta property="og:description" content="De Maracaibo a Bogotá, Ecuador, Perú, el Darién y de vuelta: la historia de un migrante venezolano con mentalidad de millonario.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://rogers980.github.io/mi-historia/">
+<meta property="og:image" content="https://rogers980.github.io/mi-historia/img/13-hoy.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Roger Soto — Mi Historia">
+<meta name="twitter:description" content="De Maracaibo a Bogotá, Ecuador, Perú, el Darién y de vuelta: la historia de un migrante venezolano con mentalidad de millonario.">
+<meta name="twitter:image" content="https://rogers980.github.io/mi-historia/img/13-hoy.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="bandera-ribbon"><span></span><span></span><span></span></div>
 
-<button id="modo-toggle" class="btn-modo" aria-label="Cambiar entre modo claro y oscuro" title="Cambiar modo">🌙</button>
+<nav class="nav-principal" id="nav-principal">
+  <a href="#intro">Quién soy</a>
+  <a href="#timeline">Mi camino</a>
+  <a href="#mentalidad">Valores</a>
+  <a href="#futuro">Futuro</a>
+</nav>
+
+<button id="musica-toggle" class="btn-musica" aria-label="Reproducir música de fondo" title="Música">🎵</button>
+<audio id="musica-fondo" src="audio/musica.mp3" loop preload="none"></audio>
 <button id="volver-arriba" class="btn-arriba" aria-label="Volver arriba" title="Volver arriba">↑</button>
 
 <!--
@@ -30,6 +51,18 @@
 -->
 
 <header class="hero">
+  <div class="hero-blobs" aria-hidden="true">
+    <span class="blob blob-dorado"></span>
+    <span class="blob blob-rojo"></span>
+    <span class="blob blob-azul"></span>
+  </div>
+  <div class="particulas" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="estrellas" aria-hidden="true">
+    <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+  </div>
   <div class="hero-content">
     <p class="hero-eyebrow">Mi historia</p>
     <h1>Roger Soto</h1>
@@ -37,12 +70,32 @@
     <p class="hero-sub">Venezolano · Migrante · 36 años · De Maracaibo al mundo, y de vuelta</p>
     <a href="#timeline" class="btn-scroll">Ver mi historia ↓</a>
   </div>
+  <span class="scroll-cue" aria-hidden="true">↓</span>
 </header>
+
+<section class="stats revelar" id="stats">
+  <div class="stat">
+    <span class="stat-numero" data-meta="5">0</span>
+    <span class="stat-etiqueta">Países recorridos</span>
+  </div>
+  <div class="stat">
+    <span class="stat-numero" data-meta="7">0</span>
+    <span class="stat-etiqueta">Oficios distintos</span>
+  </div>
+  <div class="stat">
+    <span class="stat-numero" data-meta="3">0</span>
+    <span class="stat-etiqueta">Hijos</span>
+  </div>
+  <div class="stat">
+    <span class="stat-numero" data-meta="1">0</span>
+    <span class="stat-etiqueta">Empresa propia</span>
+  </div>
+</section>
 
 <main>
 
   <section class="intro" id="intro">
-    <div class="intro-content">
+    <div class="intro-content revelar">
       <h2>Quién soy</h2>
       <p>
         Nací en Maracaibo en 1990. A mis 36 años he sido embolsador, jefe de
@@ -154,7 +207,7 @@
         <span class="hito-fecha">2016 · Bogotá y Ecuador</span>
         <h3>Aprendiendo cocina, país tras país</h3>
         <div class="hito-img">
-          <img src="img/06-bogota-cocina.jpg" alt="Cocina oriental en Bogotá y Ecuador">
+          <img src="img/06-bogota-cocina-real.jpg" alt="Roger preparando sushi en el restaurante de comida oriental en Bogotá">
         </div>
         <p>Llegué a Bogotá y duré seis meses trabajando en un restaurante de
           prestigio de comida oriental en la Zona Rosa. Entré como
@@ -176,7 +229,7 @@
         </div>
         <p>Llegué a Lima a finales de julio de 2016 sin conocer a nadie.
           Pregunté en un grupo de venezolanos en Perú dónde alquilar algo
-          barato en una zona con buen trabajo, y me fui a Surco, al oeste de
+          barato en una zona con buen trabajo, y me fui a Surge, al oeste de
           la ciudad, con una maleta, cinco mudas de ropa y 300 dólares en el
           bolsillo. El cuarto que alquilé solo tenía puerta y baño — esa
           primera noche dormí en el piso, arropado con mi propia ropa sucia,
@@ -208,8 +261,8 @@
       <div class="hito-card">
         <span class="hito-fecha">Lima, Perú</span>
         <h3>El negocio que cambió todo: Multiservice Guro SAC</h3>
-        <div class="hito-img">
-          <img src="img/09-casa-de-cambio.jpg" alt="Multiservice Guro SAC, la casa de cambio">
+        <div class="hito-img hito-img-guro">
+          <img src="img/09-casa-de-cambio-real.jpg" alt="Letrero real de Envíos Guro, el negocio de remesas">
         </div>
         <p>Durante esos ocho meses en el hotel decidí abrir mi propio
           negocio como remesista. Así nació Multiservice Guro SAC, que con
@@ -267,6 +320,15 @@
           Estados Unidos, y crucé la selva del Darién — una experiencia tan
           dura que prefiero no contarla en detalle. Llegué hasta México,
           pero no logré cruzar, así que volví a Venezuela.</p>
+        <div class="ruta-darien" aria-label="Ruta recorrida">
+          <span>Colombia</span>
+          <span>Panamá</span>
+          <span>Costa Rica</span>
+          <span>Nicaragua</span>
+          <span>Honduras</span>
+          <span>Guatemala</span>
+          <span>México</span>
+        </div>
       </div>
     </article>
 
@@ -293,7 +355,7 @@
   </section>
 
   <section class="mentalidad" id="mentalidad">
-    <div class="mentalidad-content">
+    <div class="mentalidad-content revelar">
       <h2>Trabajador humilde, mente de millonario</h2>
       <p>He sido embolsador, ayudante de almacén, lavaplatos, cocinero,
         recepcionista de hotel y dueño de mi propia empresa. En cada uno de
@@ -319,7 +381,7 @@
   </section>
 
   <section class="futuro" id="futuro">
-    <div class="futuro-content">
+    <div class="futuro-content revelar">
       <h2>Hacia dónde voy</h2>
       <p>Hoy mi meta es aprender a programar y convertirme en uno de los
         mejores alumnos que mi profesor haya tenido. Quiero que Santiago,
