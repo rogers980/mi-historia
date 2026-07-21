@@ -40,3 +40,10 @@ window.addEventListener('scroll', () => {
 botonArriba.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+
+const inicioAprendizaje = new Date('2026-07-21');
+const msPorDia = 1000 * 60 * 60 * 24;
+const dias = Math.floor((new Date() - inicioAprendizaje) / msPorDia) + 1;
+
+document.getElementById('contador-dias').textContent =
+  dias === 1 ? '1 día' : `${dias} días`;

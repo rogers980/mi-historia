@@ -253,6 +253,16 @@ img, .hito-img { max-width: 100%; }
 
 .futuro-content { max-width: 700px; margin: 0 auto; }
 
+.dias-contador {
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+  color: var(--verde-osc);
+}
+
+.dias-contador strong {
+  color: var(--dorado);
+}
+
 /* FOOTER */
 .footer {
   padding: 2.5rem 1.5rem;
