@@ -1,6 +1,6 @@
 const CUENTAS = {
-  admin: { clave: '1234', destino: 'panel-negocio' },
-  agente: { clave: '1234', destino: 'panel-agente' },
+  admin: { clave: '1234', destino: 'panel-admin.html' },
+  agente: { clave: '1234', destino: 'panel-agente.html' },
 };
 
 const clientesBase = [
@@ -30,7 +30,6 @@ const pagarBase = [
 const divisasBase = [
   { moneda: 'Dólar (USD)', compra: 3.75, venta: 3.80 },
   { moneda: 'Sol (PEN)', compra: 1.00, venta: 1.00 },
-  { moneda: 'Bolívar (VES)', compra: 38.20, venta: 39.10, nota: 'Tasa Binance' },
 ];
 
 const bancosExtranjero = [
@@ -94,10 +93,105 @@ function llenarDivisas() {
       <div class="tasas">Compra: <span>${d.compra}</span></div>
       <div class="tasas">Venta: <span>${d.venta}</span></div>
       <div class="tasas ganancia">Ganancia: <span>8%</span></div>
-      ${d.nota ? `<div class="divisa-nota">${d.nota}</div>` : ''}
     `;
     contenedor.appendChild(tarjeta);
   });
+  cargarTasasVES(contenedor);
+}
+
+function crearTarjetaVES(titulo) {
+  const tarjeta = document.createElement('div');
+  tarjeta.className = 'divisa-card';
+  tarjeta.innerHTML = `<div class="moneda">${titulo}</div><div class="tasas">Cargando...</div>`;
+  return tarjeta;
+}
+
+function calcularTendencia(clave, valorActual) {
+  const anterior = parseFloat(localStorage.getItem(clave));
+  localStorage.setItem(clave, valorActual);
+  if (!anterior || Number.isNaN(anterior) || anterior === valorActual) {
+    return '<span class="tendencia neutra">→ sin cambio</span>';
+  }
+  const cambio = ((valorActual - anterior) / anterior) * 100;
+  const sube = cambio > 0;
+  const flecha = sube ? '▲' : '▼';
+  const clase = sube ? 'sube' : 'baja';
+  return `<span class="tendencia ${clase}">${flecha} ${Math.abs(cambio).toFixed(2)}%</span>`;
+}
+
+async function cargarTasasVES(contenedor) {
+  const tarjetaBcv = crearTarjetaVES('Bolívar — BCV');
+  const tarjetaBinance = crearTarjetaVES('Bolívar — Binance');
+  const tarjetaMxn = crearTarjetaVES('Peso mexicano');
+  const tarjetaCop = crearTarjetaVES('Peso colombiano');
+  const tarjetaClp = crearTarjetaVES('Peso chileno');
+  const tarjetaPen = crearTarjetaVES('Sol — Mercado');
+  [tarjetaBcv, tarjetaBinance, tarjetaMxn, tarjetaCop, tarjetaClp, tarjetaPen].forEach((t) => contenedor.appendChild(t));
+
+  try {
+    const respuesta = await fetch('https://ve.dolarapi.com/v1/dolares');
+    if (!respuesta.ok) throw new Error('Respuesta no válida');
+    const datos = await respuesta.json();
+
+    const oficial = datos.find((d) => d.fuente === 'oficial');
+    const paralelo = datos.find((d) => d.fuente === 'paralelo');
+
+    if (oficial) {
+      const tendencia = calcularTendencia('guro_tasa_bcv', oficial.promedio);
+      tarjetaBcv.innerHTML = `
+        <div class="moneda">Bolívar — BCV</div>
+        <div class="tasas">1 USD = <span>${oficial.promedio.toFixed(2)} Bs</span></div>
+        ${tendencia}
+        <div class="divisa-nota">Oficial · ${new Date(oficial.fechaActualizacion).toLocaleDateString('es-VE')}</div>
+      `;
+    }
+    if (paralelo) {
+      const tendencia = calcularTendencia('guro_tasa_binance', paralelo.promedio);
+      tarjetaBinance.innerHTML = `
+        <div class="moneda">Bolívar — Binance</div>
+        <div class="tasas">1 USD = <span>${paralelo.promedio.toFixed(2)} Bs</span></div>
+        ${tendencia}
+        <div class="divisa-nota">Paralelo/Binance · ${new Date(paralelo.fechaActualizacion).toLocaleDateString('es-VE')}</div>
+      `;
+    }
+  } catch (error) {
+    tarjetaBcv.innerHTML = '<div class="moneda">Bolívar — BCV</div><div class="tasas">No disponible</div>';
+    tarjetaBinance.innerHTML = '<div class="moneda">Bolívar — Binance</div><div class="tasas">No disponible</div>';
+  }
+
+  try {
+    const respuesta = await fetch('https://open.er-api.com/v6/latest/USD');
+    if (!respuesta.ok) throw new Error('Respuesta no válida');
+    const datos = await respuesta.json();
+    const fecha = new Date(datos.time_last_update_utc).toLocaleDateString('es-VE');
+
+    const pares = [
+      { tarjeta: tarjetaMxn, nombre: 'Peso mexicano', codigo: 'MXN', clave: 'guro_tasa_mxn' },
+      { tarjeta: tarjetaCop, nombre: 'Peso colombiano', codigo: 'COP', clave: 'guro_tasa_cop' },
+      { tarjeta: tarjetaClp, nombre: 'Peso chileno', codigo: 'CLP', clave: 'guro_tasa_clp' },
+      { tarjeta: tarjetaPen, nombre: 'Sol — Mercado', codigo: 'PEN', clave: 'guro_tasa_pen' },
+    ];
+
+    pares.forEach(({ tarjeta, nombre, codigo, clave }) => {
+      const valor = datos.rates[codigo];
+      const tendencia = calcularTendencia(clave, valor);
+      tarjeta.innerHTML = `
+        <div class="moneda">${nombre}</div>
+        <div class="tasas">1 USD = <span>${valor.toFixed(2)} ${codigo}</span></div>
+        ${tendencia}
+        <div class="divisa-nota">Mercado · ${fecha}</div>
+      `;
+    });
+  } catch (error) {
+    [
+      { tarjeta: tarjetaMxn, nombre: 'Peso mexicano' },
+      { tarjeta: tarjetaCop, nombre: 'Peso colombiano' },
+      { tarjeta: tarjetaClp, nombre: 'Peso chileno' },
+      { tarjeta: tarjetaPen, nombre: 'Sol — Mercado' },
+    ].forEach(({ tarjeta, nombre }) => {
+      tarjeta.innerHTML = `<div class="moneda">${nombre}</div><div class="tasas">No disponible</div>`;
+    });
+  }
 }
 
 function llenarBancos() {
@@ -118,109 +212,116 @@ function cargarPanelAdmin() {
   llenarBancos();
 }
 
+/* ---------- PÁGINA DE LOGIN (panel.html) ---------- */
 const formLogin = document.getElementById('form-login');
-const pantallaLogin = document.getElementById('pantalla-login');
-const panelNegocio = document.getElementById('panel-negocio');
-const panelAgente = document.getElementById('panel-agente');
-const errorLogin = document.getElementById('error-login');
-const campoUsuario = document.getElementById('usuario');
-const botonesRol = document.querySelectorAll('.rol-btn');
-let rolActivo = 'admin';
+if (formLogin) {
+  const errorLogin = document.getElementById('error-login');
+  const campoUsuario = document.getElementById('usuario');
+  const botonesRol = document.querySelectorAll('.rol-btn');
+  let rolActivo = 'admin';
 
-botonesRol.forEach((boton) => {
-  boton.addEventListener('click', () => {
-    botonesRol.forEach((b) => b.classList.remove('activo'));
-    boton.classList.add('activo');
-    rolActivo = boton.dataset.rol;
+  botonesRol.forEach((boton) => {
+    boton.addEventListener('click', () => {
+      botonesRol.forEach((b) => b.classList.remove('activo'));
+      boton.classList.add('activo');
+      rolActivo = boton.dataset.rol;
+    });
   });
-});
 
-formLogin.addEventListener('submit', (evento) => {
-  evento.preventDefault();
-  const usuario = campoUsuario.value.trim();
-  const clave = document.getElementById('clave').value;
-  const cuenta = CUENTAS[usuario];
+  formLogin.addEventListener('submit', (evento) => {
+    evento.preventDefault();
+    const usuario = campoUsuario.value.trim();
+    const clave = document.getElementById('clave').value;
+    const cuenta = CUENTAS[usuario];
 
-  if (cuenta && cuenta.clave === clave && usuario === rolActivo) {
-    errorLogin.textContent = '';
-    pantallaLogin.hidden = true;
-    if (cuenta.destino === 'panel-negocio') {
-      panelNegocio.hidden = false;
-      cargarPanelAdmin();
+    if (cuenta && cuenta.clave === clave && usuario === rolActivo) {
+      sessionStorage.setItem('guro_rol', usuario);
+      window.location.href = cuenta.destino;
     } else {
-      panelAgente.hidden = false;
+      errorLogin.textContent = 'Usuario o contraseña incorrectos.';
     }
-    window.scrollTo(0, 0);
+  });
+}
+
+/* ---------- PÁGINA DEL ADMINISTRADOR (panel-admin.html) ---------- */
+const panelNegocio = document.getElementById('panel-negocio');
+if (panelNegocio) {
+  if (sessionStorage.getItem('guro_rol') !== 'admin') {
+    window.location.href = 'panel.html';
   } else {
-    errorLogin.textContent = 'Usuario o contraseña incorrectos.';
+    cargarPanelAdmin();
+    document.getElementById('btn-salir').addEventListener('click', () => {
+      sessionStorage.removeItem('guro_rol');
+      window.location.href = 'panel.html';
+    });
   }
-});
-
-function cerrarSesion(panel) {
-  panel.hidden = true;
-  formLogin.reset();
-  rolActivo = 'admin';
-  botonesRol.forEach((b) => b.classList.toggle('activo', b.dataset.rol === 'admin'));
-  document.getElementById('confirmacion-agente').textContent = '';
-  pantallaLogin.hidden = false;
-  window.scrollTo(0, 0);
 }
 
-document.getElementById('btn-salir').addEventListener('click', () => cerrarSesion(panelNegocio));
-document.getElementById('btn-salir-agente').addEventListener('click', () => cerrarSesion(panelAgente));
+/* ---------- PÁGINA DEL AGENTE (panel-agente.html) ---------- */
+const panelAgente = document.getElementById('panel-agente');
+if (panelAgente) {
+  if (sessionStorage.getItem('guro_rol') !== 'agente') {
+    window.location.href = 'panel.html';
+  } else {
+    document.getElementById('btn-salir-agente').addEventListener('click', () => {
+      sessionStorage.removeItem('guro_rol');
+      window.location.href = 'panel.html';
+    });
 
-function mostrarConfirmacion(texto) {
-  const nota = document.getElementById('confirmacion-agente');
-  nota.textContent = texto;
-  setTimeout(() => { nota.textContent = ''; }, 3000);
+    function mostrarConfirmacion(texto) {
+      const nota = document.getElementById('confirmacion-agente');
+      nota.textContent = texto;
+      setTimeout(() => { nota.textContent = ''; }, 3000);
+    }
+
+    document.getElementById('form-cliente').addEventListener('submit', (evento) => {
+      evento.preventDefault();
+      const datos = new FormData(evento.target);
+      agregarGuardado('guro_clientes', {
+        nombre: datos.get('nombre'),
+        pais: datos.get('pais'),
+        estado: datos.get('estado'),
+      });
+      evento.target.reset();
+      mostrarConfirmacion('Cliente agregado correctamente.');
+    });
+
+    document.getElementById('form-cobrar').addEventListener('submit', (evento) => {
+      evento.preventDefault();
+      const datos = new FormData(evento.target);
+      agregarGuardado('guro_cobrar', {
+        cliente: datos.get('cliente'),
+        monto: Number(datos.get('monto')),
+        moneda: datos.get('moneda'),
+        fecha: datos.get('fecha'),
+      });
+      evento.target.reset();
+      mostrarConfirmacion('Cuenta por cobrar agregada correctamente.');
+    });
+
+    document.getElementById('form-pagar').addEventListener('submit', (evento) => {
+      evento.preventDefault();
+      const datos = new FormData(evento.target);
+      agregarGuardado('guro_pagar', {
+        proveedor: datos.get('proveedor'),
+        monto: Number(datos.get('monto')),
+        moneda: datos.get('moneda'),
+        fecha: datos.get('fecha'),
+      });
+      evento.target.reset();
+      mostrarConfirmacion('Cuenta por pagar agregada correctamente.');
+    });
+
+    document.getElementById('form-divisa').addEventListener('submit', (evento) => {
+      evento.preventDefault();
+      const datos = new FormData(evento.target);
+      agregarGuardado('guro_divisas', {
+        moneda: datos.get('moneda'),
+        compra: Number(datos.get('compra')),
+        venta: Number(datos.get('venta')),
+      });
+      evento.target.reset();
+      mostrarConfirmacion('Divisa actualizada correctamente.');
+    });
+  }
 }
-
-document.getElementById('form-cliente').addEventListener('submit', (evento) => {
-  evento.preventDefault();
-  const datos = new FormData(evento.target);
-  agregarGuardado('guro_clientes', {
-    nombre: datos.get('nombre'),
-    pais: datos.get('pais'),
-    estado: datos.get('estado'),
-  });
-  evento.target.reset();
-  mostrarConfirmacion('Cliente agregado correctamente.');
-});
-
-document.getElementById('form-cobrar').addEventListener('submit', (evento) => {
-  evento.preventDefault();
-  const datos = new FormData(evento.target);
-  agregarGuardado('guro_cobrar', {
-    cliente: datos.get('cliente'),
-    monto: Number(datos.get('monto')),
-    moneda: datos.get('moneda'),
-    fecha: datos.get('fecha'),
-  });
-  evento.target.reset();
-  mostrarConfirmacion('Cuenta por cobrar agregada correctamente.');
-});
-
-document.getElementById('form-pagar').addEventListener('submit', (evento) => {
-  evento.preventDefault();
-  const datos = new FormData(evento.target);
-  agregarGuardado('guro_pagar', {
-    proveedor: datos.get('proveedor'),
-    monto: Number(datos.get('monto')),
-    moneda: datos.get('moneda'),
-    fecha: datos.get('fecha'),
-  });
-  evento.target.reset();
-  mostrarConfirmacion('Cuenta por pagar agregada correctamente.');
-});
-
-document.getElementById('form-divisa').addEventListener('submit', (evento) => {
-  evento.preventDefault();
-  const datos = new FormData(evento.target);
-  agregarGuardado('guro_divisas', {
-    moneda: datos.get('moneda'),
-    compra: Number(datos.get('compra')),
-    venta: Number(datos.get('venta')),
-  });
-  evento.target.reset();
-  mostrarConfirmacion('Divisa actualizada correctamente.');
-});

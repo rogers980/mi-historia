@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de datos — Multiservice Guro</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='11' y='0' fill='%23ffcc00'/%3E%3Crect width='32' height='11' y='11' fill='%230033a0'/%3E%3Crect width='32' height='10' y='22' fill='%23cf142b'/%3E%3Ctext x='16' y='16.5' font-size='7' text-anchor='middle' dominant-baseline='middle' fill='white'%3E%E2%98%85%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="panel.css">
+</head>
+<body>
+
+<div class="bandera-ribbon"><span></span><span></span><span></span></div>
+
+<div id="panel-agente" class="panel-negocio">
+
+  <header class="panel-header">
+    <div>
+      <p class="panel-eyebrow">Multiservice Guro SAC</p>
+      <h1>Registro de datos — Agente</h1>
+    </div>
+    <button id="btn-salir-agente" class="btn-salir">Cerrar sesión</button>
+  </header>
+
+  <main class="panel-main">
+
+    <section class="panel-seccion">
+      <h2>Nuevo cliente</h2>
+      <form id="form-cliente" class="form-registro">
+        <label>Nombre <input type="text" name="nombre" required></label>
+        <label>País <input type="text" name="pais" required></label>
+        <label>Estado
+          <select name="estado">
+            <option>Activo</option>
+            <option>Inactivo</option>
+          </select>
+        </label>
+        <button type="submit" class="btn-agregar">Agregar cliente</button>
+      </form>
+    </section>
+
+    <section class="panel-seccion">
+      <h2>Nueva cuenta por cobrar</h2>
+      <form id="form-cobrar" class="form-registro">
+        <label>Cliente <input type="text" name="cliente" required></label>
+        <label>Monto <input type="number" name="monto" step="0.01" required></label>
+        <label>Moneda
+          <select name="moneda">
+            <option>USD</option>
+            <option>PEN</option>
+            <option>VES</option>
+          </select>
+        </label>
+        <label>Fecha <input type="date" name="fecha" required></label>
+        <button type="submit" class="btn-agregar">Agregar cuenta por cobrar</button>
+      </form>
+    </section>
+
+    <section class="panel-seccion">
+      <h2>Nueva cuenta por pagar</h2>
+      <form id="form-pagar" class="form-registro">
+        <label>Proveedor <input type="text" name="proveedor" required></label>
+        <label>Monto <input type="number" name="monto" step="0.01" required></label>
+        <label>Moneda
+          <select name="moneda">
+            <option>USD</option>
+            <option>PEN</option>
+            <option>VES</option>
+          </select>
+        </label>
+        <label>Fecha <input type="date" name="fecha" required></label>
+        <button type="submit" class="btn-agregar">Agregar cuenta por pagar</button>
+      </form>
+    </section>
+
+    <section class="panel-seccion">
+      <h2>Actualizar divisa</h2>
+      <form id="form-divisa" class="form-registro">
+        <label>Moneda <input type="text" name="moneda" placeholder="Ej. Dólar (USD)" required></label>
+        <label>Compra <input type="number" name="compra" step="0.01" required></label>
+        <label>Venta <input type="number" name="venta" step="0.01" required></label>
+        <button type="submit" class="btn-agregar">Guardar divisa</button>
+      </form>
+    </section>
+
+    <p id="confirmacion-agente" class="confirmacion-agente"></p>
+
+  </main>
+</div>
+
+<script src="panel.js"></script>
+</body>
+</html>

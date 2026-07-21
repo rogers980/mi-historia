@@ -318,6 +318,17 @@ td { color: var(--texto-suave); }
   letter-spacing: 0.05em;
 }
 
+.tendencia {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.tendencia.sube { color: #6fd68a; }
+.tendencia.baja { color: var(--rojo); }
+.tendencia.neutra { color: var(--texto-suave); font-weight: normal; }
+
 /* FORMULARIOS DEL AGENTE */
 .form-registro {
   display: grid;
