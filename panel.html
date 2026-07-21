@@ -24,6 +24,11 @@
     <h1>Panel de Negocio</h1>
     <p class="login-sub">Acceso solo para personal autorizado</p>
 
+    <div class="selector-rol">
+      <button type="button" class="rol-btn activo" data-rol="admin">Administrador</button>
+      <button type="button" class="rol-btn" data-rol="agente">Agente</button>
+    </div>
+
     <label for="usuario">Usuario</label>
     <input type="text" id="usuario" autocomplete="off" required>
 
@@ -33,8 +38,6 @@
     <p id="error-login" class="error-login"></p>
 
     <button type="submit" class="btn-entrar">Entrar</button>
-
-    <p class="pista-demo">Demo — Administrador: <strong>admin</strong> / <strong>1234</strong> · Agente: <strong>agente</strong> / <strong>1234</strong></p>
   </form>
 </section>
 

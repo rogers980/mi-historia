@@ -97,14 +97,25 @@ const pantallaLogin = document.getElementById('pantalla-login');
 const panelNegocio = document.getElementById('panel-negocio');
 const panelAgente = document.getElementById('panel-agente');
 const errorLogin = document.getElementById('error-login');
+const campoUsuario = document.getElementById('usuario');
+const botonesRol = document.querySelectorAll('.rol-btn');
+let rolActivo = 'admin';
+
+botonesRol.forEach((boton) => {
+  boton.addEventListener('click', () => {
+    botonesRol.forEach((b) => b.classList.remove('activo'));
+    boton.classList.add('activo');
+    rolActivo = boton.dataset.rol;
+  });
+});
 
 formLogin.addEventListener('submit', (evento) => {
   evento.preventDefault();
-  const usuario = document.getElementById('usuario').value.trim();
+  const usuario = campoUsuario.value.trim();
   const clave = document.getElementById('clave').value;
   const cuenta = CUENTAS[usuario];
 
-  if (cuenta && cuenta.clave === clave) {
+  if (cuenta && cuenta.clave === clave && usuario === rolActivo) {
     errorLogin.textContent = '';
     pantallaLogin.hidden = true;
     if (cuenta.destino === 'panel-negocio') {
@@ -121,6 +132,8 @@ formLogin.addEventListener('submit', (evento) => {
 function cerrarSesion(panel) {
   panel.hidden = true;
   formLogin.reset();
+  rolActivo = 'admin';
+  botonesRol.forEach((b) => b.classList.toggle('activo', b.dataset.rol === 'admin'));
   document.getElementById('confirmacion-agente').textContent = '';
   pantallaLogin.hidden = false;
 }
