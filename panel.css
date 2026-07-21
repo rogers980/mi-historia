@@ -42,14 +42,12 @@ h1, h2 {
 .bandera-ribbon span:nth-child(2) { background: var(--azul); }
 .bandera-ribbon span:nth-child(3) { background: var(--rojo); }
 
-.aviso-demo {
-  margin-top: 5px;
-  padding: 0.5rem 1rem;
+.nota-pie {
   text-align: center;
-  background: rgba(255, 204, 0, 0.12);
-  color: var(--dorado-claro);
-  font-size: 0.8rem;
-  letter-spacing: 0.02em;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.25);
+  padding: 1.5rem 0 2.5rem;
+  margin: 0;
 }
 
 /* LOGIN */
@@ -269,6 +267,65 @@ td { color: var(--texto-suave); }
 }
 
 .divisa-card .tasas span { color: var(--texto); font-weight: bold; }
+
+/* FORMULARIOS DEL AGENTE */
+.form-registro {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  align-items: end;
+}
+
+.form-registro label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+.form-registro input,
+.form-registro select {
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+  color: var(--texto);
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.form-registro input:focus,
+.form-registro select:focus {
+  outline: none;
+  border-color: var(--dorado);
+}
+
+.btn-agregar {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 0.65rem 1.4rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--dorado);
+  color: var(--azul-osc);
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-agregar:hover {
+  background: var(--dorado-claro);
+  transform: translateY(-2px);
+}
+
+.confirmacion-agente {
+  text-align: center;
+  color: #6fd68a;
+  font-weight: bold;
+  min-height: 1.2em;
+}
 
 @media (max-width: 600px) {
   .panel-header { padding: 1.25rem 1.25rem; }

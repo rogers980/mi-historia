@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panel de Negocio — Multiservice Guro (demo)</title>
+<title>Panel de Negocio — Multiservice Guro</title>
 <meta name="robots" content="noindex, nofollow">
 
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='11' y='0' fill='%23ffcc00'/%3E%3Crect width='32' height='11' y='11' fill='%230033a0'/%3E%3Crect width='32' height='10' y='22' fill='%23cf142b'/%3E%3Ctext x='16' y='16.5' font-size='7' text-anchor='middle' dominant-baseline='middle' fill='white'%3E%E2%98%85%3C/text%3E%3C/svg%3E">
@@ -16,8 +16,6 @@
 <body>
 
 <div class="bandera-ribbon"><span></span><span></span><span></span></div>
-
-<div class="aviso-demo">Modo demostración — usuario, contraseña y datos son de ejemplo, no reales</div>
 
 <!-- PANTALLA DE LOGIN -->
 <section id="pantalla-login" class="pantalla-login">
@@ -36,7 +34,7 @@
 
     <button type="submit" class="btn-entrar">Entrar</button>
 
-    <p class="pista-demo">Demo: usuario <strong>admin</strong> · contraseña <strong>1234</strong></p>
+    <p class="pista-demo">Demo — Administrador: <strong>admin</strong> / <strong>1234</strong> · Agente: <strong>agente</strong> / <strong>1234</strong></p>
   </form>
 </section>
 
@@ -92,6 +90,85 @@
 
   </main>
 </div>
+
+<!-- PANEL DEL AGENTE (oculto hasta iniciar sesión) -->
+<div id="panel-agente" class="panel-negocio" hidden>
+
+  <header class="panel-header">
+    <div>
+      <p class="panel-eyebrow">Multiservice Guro SAC</p>
+      <h1>Registro de datos — Agente</h1>
+    </div>
+    <button id="btn-salir-agente" class="btn-salir">Cerrar sesión</button>
+  </header>
+
+  <main class="panel-main">
+
+    <section class="panel-seccion">
+      <h2>Nuevo cliente</h2>
+      <form id="form-cliente" class="form-registro">
+        <label>Nombre <input type="text" name="nombre" required></label>
+        <label>País <input type="text" name="pais" required></label>
+        <label>Estado
+          <select name="estado">
+            <option>Activo</option>
+            <option>Inactivo</option>
+          </select>
+        </label>
+        <button type="submit" class="btn-agregar">Agregar cliente</button>
+      </form>
+    </section>
+
+    <section class="panel-seccion">
+      <h2>Nueva cuenta por cobrar</h2>
+      <form id="form-cobrar" class="form-registro">
+        <label>Cliente <input type="text" name="cliente" required></label>
+        <label>Monto <input type="number" name="monto" step="0.01" required></label>
+        <label>Moneda
+          <select name="moneda">
+            <option>USD</option>
+            <option>PEN</option>
+            <option>VES</option>
+          </select>
+        </label>
+        <label>Fecha <input type="date" name="fecha" required></label>
+        <button type="submit" class="btn-agregar">Agregar cuenta por cobrar</button>
+      </form>
+    </section>
+
+    <section class="panel-seccion">
+      <h2>Nueva cuenta por pagar</h2>
+      <form id="form-pagar" class="form-registro">
+        <label>Proveedor <input type="text" name="proveedor" required></label>
+        <label>Monto <input type="number" name="monto" step="0.01" required></label>
+        <label>Moneda
+          <select name="moneda">
+            <option>USD</option>
+            <option>PEN</option>
+            <option>VES</option>
+          </select>
+        </label>
+        <label>Fecha <input type="date" name="fecha" required></label>
+        <button type="submit" class="btn-agregar">Agregar cuenta por pagar</button>
+      </form>
+    </section>
+
+    <section class="panel-seccion">
+      <h2>Actualizar divisa</h2>
+      <form id="form-divisa" class="form-registro">
+        <label>Moneda <input type="text" name="moneda" placeholder="Ej. Dólar (USD)" required></label>
+        <label>Compra <input type="number" name="compra" step="0.01" required></label>
+        <label>Venta <input type="number" name="venta" step="0.01" required></label>
+        <button type="submit" class="btn-agregar">Guardar divisa</button>
+      </form>
+    </section>
+
+    <p id="confirmacion-agente" class="confirmacion-agente"></p>
+
+  </main>
+</div>
+
+<p class="nota-pie">Datos de ejemplo</p>
 
 <script src="panel.js"></script>
 </body>
