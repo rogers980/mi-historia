@@ -295,6 +295,7 @@ td { color: var(--texto-suave); }
 }
 
 .divisa-card .tasas span { color: var(--texto); font-weight: bold; }
+.divisa-card .ganancia span { color: #6fd68a; }
 
 /* FORMULARIOS DEL AGENTE */
 .form-registro {

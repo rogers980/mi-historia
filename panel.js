@@ -9,6 +9,10 @@ const clientesBase = [
   { nombre: 'Ana Gómez', pais: 'Colombia', estado: 'Activo' },
   { nombre: 'Luis Rodríguez', pais: 'Ecuador', estado: 'Inactivo' },
   { nombre: 'Daniela Torres', pais: 'Perú', estado: 'Activo' },
+  { nombre: 'Michael Johnson', pais: 'Estados Unidos', estado: 'Activo' },
+  { nombre: 'Jennifer García', pais: 'Estados Unidos', estado: 'Activo' },
+  { nombre: 'José Hernández', pais: 'México', estado: 'Activo' },
+  { nombre: 'Guadalupe Martínez', pais: 'México', estado: 'Inactivo' },
 ];
 
 const cobrarBase = [
@@ -27,6 +31,15 @@ const divisasBase = [
   { moneda: 'Dólar (USD)', compra: 3.75, venta: 3.80 },
   { moneda: 'Sol (PEN)', compra: 1.00, venta: 1.00 },
   { moneda: 'Bolívar (VES)', compra: 38.20, venta: 39.10 },
+];
+
+const bancosExtranjero = [
+  { pais: 'Colombia', banco: 'Bancolombia' },
+  { pais: 'Chile', banco: 'Banco Santander' },
+  { pais: 'Perú', banco: 'Banco BCP' },
+  { pais: 'Perú', banco: 'Interbank' },
+  { pais: 'Estados Unidos', banco: 'Zelle' },
+  { pais: 'México', banco: 'Banco Azteca' },
 ];
 
 function leerGuardado(clave) {
@@ -80,8 +93,19 @@ function llenarDivisas() {
       <div class="moneda">${d.moneda}</div>
       <div class="tasas">Compra: <span>${d.compra}</span></div>
       <div class="tasas">Venta: <span>${d.venta}</span></div>
+      <div class="tasas ganancia">Ganancia: <span>8%</span></div>
     `;
     contenedor.appendChild(tarjeta);
+  });
+}
+
+function llenarBancos() {
+  const tbody = document.querySelector('#seccion-bancos tbody');
+  tbody.innerHTML = '';
+  bancosExtranjero.forEach((b) => {
+    const fila = document.createElement('tr');
+    fila.innerHTML = `<td>${b.pais}</td><td>${b.banco}</td>`;
+    tbody.appendChild(fila);
   });
 }
 
@@ -90,6 +114,7 @@ function cargarPanelAdmin() {
   llenarCuentas(cobrarBase, 'guro_cobrar', '#seccion-cobrar', 'cliente', 'total-cobrar');
   llenarCuentas(pagarBase, 'guro_pagar', '#seccion-pagar', 'proveedor', 'total-pagar');
   llenarDivisas();
+  llenarBancos();
 }
 
 const formLogin = document.getElementById('form-login');
