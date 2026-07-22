@@ -64,6 +64,29 @@ function formatearMonto(monto, moneda) {
   return `${Number(monto).toLocaleString('es')} ${moneda}`;
 }
 
+function formatearNumero(valor, decimales = 2) {
+  return Number(valor).toLocaleString('es', {
+    minimumFractionDigits: decimales,
+    maximumFractionDigits: decimales,
+  });
+}
+
+const BANDERAS_SVG = {
+  'Perú': '<rect width="8" height="14" fill="#D91023"/><rect x="8" width="8" height="14" fill="#fff"/><rect x="16" width="8" height="14" fill="#D91023"/>',
+  'Venezuela': '<rect width="24" height="4.67" fill="#ffcc00"/><rect y="4.67" width="24" height="4.67" fill="#0033a0"/><rect y="9.33" width="24" height="4.67" fill="#cf142b"/>',
+  'Colombia': '<rect width="24" height="7" fill="#FCD116"/><rect y="7" width="24" height="3.5" fill="#003893"/><rect y="10.5" width="24" height="3.5" fill="#CE1126"/>',
+  'Ecuador': '<rect width="24" height="7" fill="#FFDD00"/><rect y="7" width="24" height="3.5" fill="#034EA2"/><rect y="10.5" width="24" height="3.5" fill="#ED1C24"/>',
+  'Estados Unidos': '<rect width="24" height="14" fill="#fff"/><rect width="24" height="1.6" fill="#B22234"/><rect y="3.2" width="24" height="1.6" fill="#B22234"/><rect y="6.4" width="24" height="1.6" fill="#B22234"/><rect y="9.6" width="24" height="1.6" fill="#B22234"/><rect y="12.8" width="24" height="1.2" fill="#B22234"/><rect width="10" height="7.5" fill="#3C3B6E"/>',
+  'México': '<rect width="8" height="14" fill="#006341"/><rect x="8" width="8" height="14" fill="#fff"/><rect x="16" width="8" height="14" fill="#CE1126"/>',
+  'Chile': '<rect width="24" height="7" fill="#fff"/><rect y="7" width="24" height="7" fill="#D52B1E"/><rect width="9" height="7" fill="#0039A6"/>',
+};
+
+function banderaPais(pais) {
+  const contenido = BANDERAS_SVG[pais];
+  if (!contenido) return '';
+  return `<svg class="bandera-mini" viewBox="0 0 24 14" width="18" height="11">${contenido}</svg> `;
+}
+
 function llenarClientes() {
   const tbody = document.querySelector('#seccion-clientes tbody');
   tbody.innerHTML = '';
@@ -71,7 +94,7 @@ function llenarClientes() {
   todos.forEach((c) => {
     const fila = document.createElement('tr');
     const claseEstado = c.estado === 'Activo' ? 'estado-activo' : 'estado-inactivo';
-    fila.innerHTML = `<td>${c.nombre}</td><td>${c.pais}</td><td class="${claseEstado}">${c.estado}</td>`;
+    fila.innerHTML = `<td>${c.nombre}</td><td>${banderaPais(c.pais)}${c.pais}</td><td class="${claseEstado}">${c.estado}</td>`;
     tbody.appendChild(fila);
   });
 }
@@ -169,13 +192,13 @@ function dibujarSparkline(historial) {
 }
 
 async function cargarTasasVES(contenedor) {
-  const tarjetaBcv = crearTarjetaVES('Bolívar — BCV');
-  const tarjetaBinance = crearTarjetaVES('Bolívar — Binance');
-  const tarjetaMxn = crearTarjetaVES('Peso mexicano');
-  const tarjetaCop = crearTarjetaVES('Peso colombiano');
-  const tarjetaClp = crearTarjetaVES('Peso chileno');
-  const tarjetaPen = crearTarjetaVES('Sol — Mercado');
-  const tarjetaBtc = crearTarjetaVES('Bitcoin (BTC)');
+  const tarjetaBcv = crearTarjetaVES(`${banderaPais('Venezuela')}Bolívar — BCV`);
+  const tarjetaBinance = crearTarjetaVES(`${banderaPais('Venezuela')}Bolívar — Binance`);
+  const tarjetaMxn = crearTarjetaVES(`${banderaPais('México')}Peso mexicano`);
+  const tarjetaCop = crearTarjetaVES(`${banderaPais('Colombia')}Peso colombiano`);
+  const tarjetaClp = crearTarjetaVES(`${banderaPais('Chile')}Peso chileno`);
+  const tarjetaPen = crearTarjetaVES(`${banderaPais('Perú')}Sol — Mercado`);
+  const tarjetaBtc = crearTarjetaVES('₿ Bitcoin (BTC)');
   [tarjetaBcv, tarjetaBinance, tarjetaMxn, tarjetaCop, tarjetaClp, tarjetaPen, tarjetaBtc].forEach((t) => contenedor.appendChild(t));
 
   try {
@@ -189,8 +212,8 @@ async function cargarTasasVES(contenedor) {
     if (oficial) {
       const historial = actualizarHistorial('guro_hist_bcv', oficial.promedio);
       tarjetaBcv.innerHTML = `
-        <div class="moneda">Bolívar — BCV</div>
-        <div class="tasas">1 USD = <span>${oficial.promedio.toFixed(2)} Bs</span></div>
+        <div class="moneda">${banderaPais('Venezuela')}Bolívar — BCV</div>
+        <div class="tasas">1 USD = <span>${formatearNumero(oficial.promedio)} Bs</span></div>
         ${calcularTendencia(historial)}
         ${dibujarSparkline(historial)}
         <div class="divisa-nota">Oficial · ${new Date(oficial.fechaActualizacion).toLocaleDateString('es-VE')}</div>
@@ -199,16 +222,16 @@ async function cargarTasasVES(contenedor) {
     if (paralelo) {
       const historial = actualizarHistorial('guro_hist_binance', paralelo.promedio);
       tarjetaBinance.innerHTML = `
-        <div class="moneda">Bolívar — Binance</div>
-        <div class="tasas">1 USD = <span>${paralelo.promedio.toFixed(2)} Bs</span></div>
+        <div class="moneda">${banderaPais('Venezuela')}Bolívar — Binance</div>
+        <div class="tasas">1 USD = <span>${formatearNumero(paralelo.promedio)} Bs</span></div>
         ${calcularTendencia(historial)}
         ${dibujarSparkline(historial)}
         <div class="divisa-nota">Paralelo/Binance · ${new Date(paralelo.fechaActualizacion).toLocaleDateString('es-VE')}</div>
       `;
     }
   } catch (error) {
-    tarjetaBcv.innerHTML = '<div class="moneda">Bolívar — BCV</div><div class="tasas">No disponible</div>';
-    tarjetaBinance.innerHTML = '<div class="moneda">Bolívar — Binance</div><div class="tasas">No disponible</div>';
+    tarjetaBcv.innerHTML = `<div class="moneda">${banderaPais('Venezuela')}Bolívar — BCV</div><div class="tasas">No disponible</div>`;
+    tarjetaBinance.innerHTML = `<div class="moneda">${banderaPais('Venezuela')}Bolívar — Binance</div><div class="tasas">No disponible</div>`;
   }
 
   try {
@@ -218,10 +241,10 @@ async function cargarTasasVES(contenedor) {
     const fecha = new Date(datos.time_last_update_utc).toLocaleDateString('es-VE');
 
     const pares = [
-      { tarjeta: tarjetaMxn, nombre: 'Peso mexicano', codigo: 'MXN', clave: 'guro_hist_mxn' },
-      { tarjeta: tarjetaCop, nombre: 'Peso colombiano', codigo: 'COP', clave: 'guro_hist_cop' },
-      { tarjeta: tarjetaClp, nombre: 'Peso chileno', codigo: 'CLP', clave: 'guro_hist_clp' },
-      { tarjeta: tarjetaPen, nombre: 'Sol — Mercado', codigo: 'PEN', clave: 'guro_hist_pen' },
+      { tarjeta: tarjetaMxn, nombre: `${banderaPais('México')}Peso mexicano`, codigo: 'MXN', clave: 'guro_hist_mxn' },
+      { tarjeta: tarjetaCop, nombre: `${banderaPais('Colombia')}Peso colombiano`, codigo: 'COP', clave: 'guro_hist_cop' },
+      { tarjeta: tarjetaClp, nombre: `${banderaPais('Chile')}Peso chileno`, codigo: 'CLP', clave: 'guro_hist_clp' },
+      { tarjeta: tarjetaPen, nombre: `${banderaPais('Perú')}Sol — Mercado`, codigo: 'PEN', clave: 'guro_hist_pen' },
     ];
 
     pares.forEach(({ tarjeta, nombre, codigo, clave }) => {
@@ -229,7 +252,7 @@ async function cargarTasasVES(contenedor) {
       const historial = actualizarHistorial(clave, valor);
       tarjeta.innerHTML = `
         <div class="moneda">${nombre}</div>
-        <div class="tasas">1 USD = <span>${valor.toFixed(2)} ${codigo}</span></div>
+        <div class="tasas">1 USD = <span>${formatearNumero(valor)} ${codigo}</span></div>
         ${calcularTendencia(historial)}
         ${dibujarSparkline(historial)}
         <div class="divisa-nota">Mercado · ${fecha}</div>
@@ -237,10 +260,10 @@ async function cargarTasasVES(contenedor) {
     });
   } catch (error) {
     [
-      { tarjeta: tarjetaMxn, nombre: 'Peso mexicano' },
-      { tarjeta: tarjetaCop, nombre: 'Peso colombiano' },
-      { tarjeta: tarjetaClp, nombre: 'Peso chileno' },
-      { tarjeta: tarjetaPen, nombre: 'Sol — Mercado' },
+      { tarjeta: tarjetaMxn, nombre: `${banderaPais('México')}Peso mexicano` },
+      { tarjeta: tarjetaCop, nombre: `${banderaPais('Colombia')}Peso colombiano` },
+      { tarjeta: tarjetaClp, nombre: `${banderaPais('Chile')}Peso chileno` },
+      { tarjeta: tarjetaPen, nombre: `${banderaPais('Perú')}Sol — Mercado` },
     ].forEach(({ tarjeta, nombre }) => {
       tarjeta.innerHTML = `<div class="moneda">${nombre}</div><div class="tasas">No disponible</div>`;
     });
@@ -253,14 +276,14 @@ async function cargarTasasVES(contenedor) {
     const valor = datos.bitcoin.usd;
     const historial = actualizarHistorial('guro_hist_btc', valor);
     tarjetaBtc.innerHTML = `
-      <div class="moneda">Bitcoin (BTC)</div>
-      <div class="tasas">1 BTC = <span>$${valor.toLocaleString('es')}</span></div>
+      <div class="moneda">₿ Bitcoin (BTC)</div>
+      <div class="tasas">1 BTC = <span>$${formatearNumero(valor, 0)}</span></div>
       ${calcularTendencia(historial)}
       ${dibujarSparkline(historial)}
       <div class="divisa-nota">CoinGecko · en vivo</div>
     `;
   } catch (error) {
-    tarjetaBtc.innerHTML = '<div class="moneda">Bitcoin (BTC)</div><div class="tasas">No disponible</div>';
+    tarjetaBtc.innerHTML = '<div class="moneda">₿ Bitcoin (BTC)</div><div class="tasas">No disponible</div>';
   }
 }
 
@@ -269,7 +292,7 @@ function llenarBancos() {
   tbody.innerHTML = '';
   bancosExtranjero.forEach((b) => {
     const fila = document.createElement('tr');
-    fila.innerHTML = `<td>${b.pais}</td><td>${b.banco}</td>`;
+    fila.innerHTML = `<td>${banderaPais(b.pais)}${b.pais}</td><td>${b.banco}</td>`;
     tbody.appendChild(fila);
   });
 }

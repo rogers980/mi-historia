@@ -314,6 +314,28 @@ td { color: var(--texto-suave); }
   border-radius: 12px;
   padding: 1rem;
   text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.divisa-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 204, 0, 0.4);
+}
+
+.tabla-wrap tbody tr {
+  transition: background 0.15s ease;
+}
+
+.tabla-wrap tbody tr:hover {
+  background: rgba(255, 204, 0, 0.05);
+}
+
+.bandera-mini {
+  vertical-align: middle;
+  border-radius: 2px;
+  margin-right: 0.2rem;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.15);
 }
 
 .divisa-card .moneda {
