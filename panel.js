@@ -389,7 +389,7 @@ if (panelAgente) {
         fecha: datos.get('fecha'),
       });
       evento.target.reset();
-      mostrarConfirmacion('Cuenta por cobrar agregada correctamente.');
+      mostrarConfirmacion('Depósito agregado correctamente.');
     });
 
     document.getElementById('form-pagar').addEventListener('submit', (evento) => {
