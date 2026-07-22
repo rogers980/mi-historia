@@ -811,6 +811,28 @@ img, .hito-img { max-width: 100%; }
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
+.btn-whatsapp {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 1.25rem;
+  z-index: 10;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #25D366;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-whatsapp:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+}
+
 .btn-arriba.visible {
   opacity: 1;
   pointer-events: auto;
