@@ -13,6 +13,32 @@ const clientesBase = [
   { nombre: 'Jennifer García', pais: 'Estados Unidos', estado: 'Activo' },
   { nombre: 'José Hernández', pais: 'México', estado: 'Activo' },
   { nombre: 'Guadalupe Martínez', pais: 'México', estado: 'Inactivo' },
+  { nombre: 'Pedro Ramírez (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Lucía Salazar (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Jorge Medina (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Rosa Delgado (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Iván Castillo (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Marta Rojas (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Tomás Vargas (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Elena Paredes (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Ricardo Núñez (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Valentina Cruz (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Andrés Molina (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Gabriela Torres (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Fernando Ortiz (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Camila Reyes (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Diego Herrera (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Paola Jiménez (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Sebastián Guerrero (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Natalia Flores (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Mateo Silva (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Carolina Espinoza (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Julián Aguilar (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Daniela Campos (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Rodrigo Peña (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Andrea Soto (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Emilio Cordero (menudeo)', pais: 'Venezuela', estado: 'Activo' },
+  { nombre: 'Isabel Marín (menudeo)', pais: 'Venezuela', estado: 'Activo' },
 ];
 
 const cobrarBase = [
@@ -102,29 +128,105 @@ function banderaPais(pais) {
   return `<svg class="bandera-mini" viewBox="0 0 24 14" width="18" height="11">${contenido}</svg> `;
 }
 
-function llenarClientes() {
-  const tbody = document.querySelector('#seccion-clientes tbody');
-  tbody.innerHTML = '';
-  const todos = [...clientesBase, ...leerGuardado('guro_clientes')];
-  todos.forEach((c) => {
+function crearPaginador({ selectorTbody, idAnterior, idSiguiente, idInfo, porPagina, etiqueta, obtenerDatos, renderFila }) {
+  const botonAnterior = document.getElementById(idAnterior);
+  const botonSiguiente = document.getElementById(idSiguiente);
+
+  if (!botonAnterior || !botonSiguiente) {
+    return { render() {}, irAPagina1() {} };
+  }
+
+  let pagina = 1;
+
+  function render() {
+    const datos = obtenerDatos();
+    const totalPaginas = Math.max(1, Math.ceil(datos.length / porPagina));
+    pagina = Math.min(pagina, totalPaginas);
+    const inicio = (pagina - 1) * porPagina;
+
+    const tbody = document.querySelector(selectorTbody);
+    tbody.innerHTML = '';
+    datos.slice(inicio, inicio + porPagina).forEach((item) => tbody.appendChild(renderFila(item)));
+
+    document.getElementById(idInfo).textContent = `Página ${pagina} de ${totalPaginas} (${datos.length} ${etiqueta})`;
+    botonAnterior.disabled = pagina <= 1;
+    botonSiguiente.disabled = pagina >= totalPaginas;
+  }
+
+  botonAnterior.addEventListener('click', () => { pagina -= 1; render(); });
+  botonSiguiente.addEventListener('click', () => { pagina += 1; render(); });
+
+  return {
+    render,
+    irAPagina1() { pagina = 1; render(); },
+  };
+}
+
+let filtroClientes = '';
+const paginadorClientes = crearPaginador({
+  selectorTbody: '#seccion-clientes tbody',
+  idAnterior: 'pag-anterior',
+  idSiguiente: 'pag-siguiente',
+  idInfo: 'pag-info',
+  porPagina: 8,
+  etiqueta: 'clientes',
+  obtenerDatos() {
+    const todos = [...clientesBase, ...leerGuardado('guro_clientes')];
+    if (!filtroClientes) return todos;
+    return todos.filter((c) => `${c.nombre} ${c.pais}`.toLowerCase().includes(filtroClientes));
+  },
+  renderFila(c) {
     const fila = document.createElement('tr');
     const claseEstado = c.estado === 'Activo' ? 'estado-activo' : 'estado-inactivo';
     fila.innerHTML = `<td>${c.nombre}</td><td>${banderaPais(c.pais)}${c.pais}</td><td class="${claseEstado}">${c.estado}</td>`;
-    tbody.appendChild(fila);
-  });
+    return fila;
+  },
+});
+
+function llenarClientes() {
+  paginadorClientes.render();
+}
+
+function obtenerDepositos() {
+  return [...cobrarBase, ...leerGuardado('guro_cobrar')];
+}
+
+const paginadorDepositos = crearPaginador({
+  selectorTbody: '#seccion-cobrar tbody',
+  idAnterior: 'pag-anterior-cobrar',
+  idSiguiente: 'pag-siguiente-cobrar',
+  idInfo: 'pag-info-cobrar',
+  porPagina: 8,
+  etiqueta: 'depósitos',
+  obtenerDatos: obtenerDepositos,
+  renderFila(item) {
+    const fila = document.createElement('tr');
+    fila.innerHTML = `<td>${item.cliente}</td><td>${formatearMonto(item.monto, item.moneda)}</td><td>${item.fecha}</td>`;
+    return fila;
+  },
+});
+
+function calcularTotalUSD(lista) {
+  return lista.reduce((acc, item) => (item.moneda === 'USD' ? acc + Number(item.monto) : acc), 0);
+}
+
+function llenarDepositos() {
+  paginadorDepositos.render();
+  const total = calcularTotalUSD(obtenerDepositos());
+  document.getElementById('total-cobrar').textContent = `${total.toLocaleString('es')} USD (aprox.)`;
+  return total;
 }
 
 function llenarCuentas(base, claveGuardado, selectorTabla, columnaNombre, idTotal) {
   const tbody = document.querySelector(`${selectorTabla} tbody`);
   tbody.innerHTML = '';
   const todos = [...base, ...leerGuardado(claveGuardado)];
-  let total = 0;
   todos.forEach((item) => {
     const fila = document.createElement('tr');
     fila.innerHTML = `<td>${item[columnaNombre]}</td><td>${formatearMonto(item.monto, item.moneda)}</td><td>${item.fecha}</td>`;
     tbody.appendChild(fila);
-    if (item.moneda === 'USD') total += Number(item.monto);
   });
+  const total = calcularTotalUSD(todos);
   document.getElementById(idTotal).textContent = `${total.toLocaleString('es')} USD (aprox.)`;
   return total;
 }
@@ -143,10 +245,8 @@ function activarBuscadorClientes() {
   const campo = document.getElementById('buscar-cliente');
   if (!campo) return;
   campo.addEventListener('input', () => {
-    const consulta = campo.value.trim().toLowerCase();
-    document.querySelectorAll('#seccion-clientes tbody tr').forEach((fila) => {
-      fila.hidden = consulta !== '' && !fila.textContent.toLowerCase().includes(consulta);
-    });
+    filtroClientes = campo.value.trim().toLowerCase();
+    paginadorClientes.irAPagina1();
   });
 }
 
@@ -337,7 +437,7 @@ function llenarBancos() {
 function cargarPanelAdmin() {
   llenarClientes();
   activarBuscadorClientes();
-  const totalDepositado = llenarCuentas(cobrarBase, 'guro_cobrar', '#seccion-cobrar', 'cliente', 'total-cobrar');
+  const totalDepositado = llenarDepositos();
   const totalPagar = llenarCuentas(pagarBase, 'guro_pagar', '#seccion-pagar', 'proveedor', 'total-pagar');
   actualizarResumen(totalDepositado, totalPagar);
   llenarDivisas();

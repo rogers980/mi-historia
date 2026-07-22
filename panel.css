@@ -326,6 +326,42 @@ h1, h2 {
   border-color: var(--dorado);
 }
 
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.pag-info {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+.btn-pagina {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--dorado);
+  background: transparent;
+  color: var(--dorado);
+  font-weight: bold;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-pagina:hover:not(:disabled) {
+  background: var(--dorado);
+  color: var(--azul-osc);
+}
+
+.btn-pagina:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
 @media print {
   .panel-header-botones, .buscador, .separador-mercado, #seccion-tasas-vivo {
     display: none !important;
