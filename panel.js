@@ -30,6 +30,21 @@ const cobrarBase = [
   { cliente: 'Ricardo Núñez (menudeo)', monto: 200, moneda: 'USD', fecha: '2026-07-21' },
   { cliente: 'Valentina Cruz (menudeo)', monto: 300, moneda: 'USD', fecha: '2026-07-21' },
   { cliente: 'Andrés Molina (menudeo)', monto: 500, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Gabriela Torres (menudeo)', monto: 25, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Fernando Ortiz (menudeo)', monto: 40, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Camila Reyes (menudeo)', monto: 60, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Diego Herrera (menudeo)', monto: 80, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Paola Jiménez (menudeo)', monto: 90, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Sebastián Guerrero (menudeo)', monto: 120, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Natalia Flores (menudeo)', monto: 130, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Mateo Silva (menudeo)', monto: 175, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Carolina Espinoza (menudeo)', monto: 180, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Julián Aguilar (menudeo)', monto: 220, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Daniela Campos (menudeo)', monto: 250, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Rodrigo Peña (menudeo)', monto: 275, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Andrea Soto (menudeo)', monto: 320, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Emilio Cordero (menudeo)', monto: 350, moneda: 'USD', fecha: '2026-07-21' },
+  { cliente: 'Isabel Marín (menudeo)', monto: 400, moneda: 'USD', fecha: '2026-07-21' },
 ];
 
 const pagarBase = [
@@ -111,6 +126,28 @@ function llenarCuentas(base, claveGuardado, selectorTabla, columnaNombre, idTota
     if (item.moneda === 'USD') total += Number(item.monto);
   });
   document.getElementById(idTotal).textContent = `${total.toLocaleString('es')} USD (aprox.)`;
+  return total;
+}
+
+function actualizarResumen(totalDepositado, totalPagar) {
+  const balance = totalDepositado - totalPagar;
+  document.getElementById('resumen-depositado').textContent = `${totalDepositado.toLocaleString('es')} USD`;
+  document.getElementById('resumen-pagar').textContent = `${totalPagar.toLocaleString('es')} USD`;
+  const elBalance = document.getElementById('resumen-balance');
+  elBalance.textContent = `${balance.toLocaleString('es')} USD`;
+  elBalance.classList.toggle('positivo', balance >= 0);
+  elBalance.classList.toggle('negativo', balance < 0);
+}
+
+function activarBuscadorClientes() {
+  const campo = document.getElementById('buscar-cliente');
+  if (!campo) return;
+  campo.addEventListener('input', () => {
+    const consulta = campo.value.trim().toLowerCase();
+    document.querySelectorAll('#seccion-clientes tbody tr').forEach((fila) => {
+      fila.hidden = consulta !== '' && !fila.textContent.toLowerCase().includes(consulta);
+    });
+  });
 }
 
 function llenarDivisas() {
@@ -299,10 +336,17 @@ function llenarBancos() {
 
 function cargarPanelAdmin() {
   llenarClientes();
-  llenarCuentas(cobrarBase, 'guro_cobrar', '#seccion-cobrar', 'cliente', 'total-cobrar');
-  llenarCuentas(pagarBase, 'guro_pagar', '#seccion-pagar', 'proveedor', 'total-pagar');
+  activarBuscadorClientes();
+  const totalDepositado = llenarCuentas(cobrarBase, 'guro_cobrar', '#seccion-cobrar', 'cliente', 'total-cobrar');
+  const totalPagar = llenarCuentas(pagarBase, 'guro_pagar', '#seccion-pagar', 'proveedor', 'total-pagar');
+  actualizarResumen(totalDepositado, totalPagar);
   llenarDivisas();
   llenarBancos();
+
+  const botonDescargar = document.getElementById('btn-descargar');
+  if (botonDescargar) {
+    botonDescargar.addEventListener('click', () => window.print());
+  }
 }
 
 /* ---------- PÁGINA DE LOGIN (panel.html) ---------- */
