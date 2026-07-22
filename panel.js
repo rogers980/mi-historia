@@ -33,12 +33,12 @@ const cobrarBase = [
 ];
 
 const pagarBase = [
-  { proveedor: 'Banco Mercantil', monto: 2200, moneda: 'USD', fecha: '2026-07-22' },
-  { proveedor: 'Banesco', monto: 1500, moneda: 'USD', fecha: '2026-07-25' },
-  { proveedor: 'BBVA Provincial', monto: 900, moneda: 'USD', fecha: '2026-07-28' },
+  { proveedor: 'Banco Mercantil', monto: 800, moneda: 'USD', fecha: '2026-07-22' },
+  { proveedor: 'Banesco', monto: 500, moneda: 'USD', fecha: '2026-07-25' },
+  { proveedor: 'BBVA Provincial', monto: 600, moneda: 'USD', fecha: '2026-07-28' },
   { proveedor: 'Bancolombia', monto: 350, moneda: 'USD', fecha: '2026-07-23' },
-  { proveedor: 'Interbank', monto: 600, moneda: 'USD', fecha: '2026-07-24' },
-  { proveedor: 'Banco Azteca', monto: 950, moneda: 'USD', fecha: '2026-07-26' },
+  { proveedor: 'Interbank', monto: 400, moneda: 'USD', fecha: '2026-07-24' },
+  { proveedor: 'Banco Azteca', monto: 350, moneda: 'USD', fecha: '2026-07-26' },
 ];
 
 const bancosExtranjero = [
